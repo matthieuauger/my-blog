@@ -1,0 +1,1 @@
+import "./src/style/syntax-highlighting-prism-okaidia.css";

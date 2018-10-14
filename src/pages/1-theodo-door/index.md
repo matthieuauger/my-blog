@@ -28,21 +28,23 @@ Second part of development consisted of opening the door with Node.js, without i
 Node.js offers powerful modules for almost everything. Here we only want to send a message to a server,
 let's use [net](http://nodejs.org/api/net.html) module.
 
-    // lib/client/door.js
-    var net = require('net');
-    function open() {
-        var client = new net.Socket();
-        client.connect("1337", "192.168.1.1", function() {
-            console.log("Opening the Door");
-            client.write("MY_AWESOME_PRIVATE_KEY" + "\r");
-        });
-        client.on("data", function(data) {
-            console.log("Receiving response : " + data);
-            if ("CLOSE\n" == data) {
-                client.end();
-            }
-        });
-    }
+```javascript
+// lib/client/door.js
+var net = require('net');
+function open() {
+    var client = new net.Socket();
+    client.connect("1337", "192.168.1.1", function() {
+        console.log("Opening the Door");
+        client.write("MY_AWESOME_PRIVATE_KEY" + "\r");
+    });
+    client.on("data", function(data) {
+        console.log("Receiving response : " + data);
+        if ("CLOSE\n" == data) {
+            client.end();
+        }
+    });
+}
+```
 
 Quite easy! We connect to the server port and send it the private key. The server answers "OPEN", sleeps for 2 seconds and answers again "CLOSE".
 Once the "CLOSE" message is received back, we disconnect our client.
@@ -53,24 +55,26 @@ Once the client has been developed, we needed a simple interface to display butt
 [Express](http://expressjs.com/) Node.js framework with [Jade](http://jade-lang.com/) templates, and 
 [Bootstrap](http://getbootstrap.com/) CSS for buttons.
 
-    //layout.jade
-    doctype html
-        html
-        head
-            title Theodo Door
-            link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-            link(rel='stylesheet', href='/stylesheets/style.css')
-        body
-            block content
-    //index.jade
-    extends layout
-    block content
-        .body
-            h1 Theodo Door
-            button#openDoor.btn(type="button") OPEN
-            a#googleSigninButton.btn.btn-primary(
-                href=""
-            ) Google
+```pug
+//layout.jade
+doctype html
+    html
+    head
+        title Theodo Door
+        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body
+        block content
+//index.jade
+extends layout
+block content
+    .body
+        h1 Theodo Door
+        button#openDoor.btn(type="button") OPEN
+        a#googleSigninButton.btn.btn-primary(
+            href=""
+        ) Google
+```
 
 At this point, we have a client and an interface. The only missing piece is the logic which will make them work together.
 
@@ -100,29 +104,31 @@ Indeed, it's not recommended. We are doing it here for three reasons :
 Generating the connection page with Express
 --------------------------------------------
 
-    // Index action. Juste some buttons with the URL for Google Authentication
-    app.get('/', function(req, res) {
-        var authUrl = oauth2Client.generateAuthUrl({
-            access_type: 'offline',
-            scope: 'https://www.googleapis.com/auth/userinfo.email',
-            state: 'profile',
-            approval_prompt: 'force'
-        });
-        res.render('index', {
-            authUrl: authUrl
-        });
+```javascript
+// Index action. Juste some buttons with the URL for Google Authentication
+app.get('/', function(req, res) {
+    var authUrl = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: 'https://www.googleapis.com/auth/userinfo.email',
+        state: 'profile',
+        approval_prompt: 'force'
     });
-    // Action which will read the token sent back by Google
-    app.get('/oauthcallback', function(req, res) {
-        var code = req.query.code;
-        oauth2Client.getToken(code, function(err, tokens) {
-            if (!"refresh_token" in tokens) {
-                return res.send("Authentication process has failed");
-            }
-            // Send back the token to the client in URL
-            res.redirect("/?refresh_token=" + tokens.refresh_token);
-        });
+    res.render('index', {
+        authUrl: authUrl
     });
+});
+// Action which will read the token sent back by Google
+app.get('/oauthcallback', function(req, res) {
+    var code = req.query.code;
+    oauth2Client.getToken(code, function(err, tokens) {
+        if (!"refresh_token" in tokens) {
+            return res.send("Authentication process has failed");
+        }
+        // Send back the token to the client in URL
+        res.redirect("/?refresh_token=" + tokens.refresh_token);
+    });
+});
+```
 
 Client-side, some javascript code manages to fetch the token in the URL and to store it in local storage.
 Finally, each morning, the application checks if a refresh token is present in local storage.
@@ -130,49 +136,54 @@ If not the process above is triggered. Otherwise, we send it to our application 
 The remaining step is the easier, we read the domain of the user email with the token, and if the domain match, we call 
 our client to open the door.
 
-    app.post('/api/opendoor', function(req, res) {
-        var refresh_token = req.body.refresh_token;
-        oauth2Client.credentials = {
-            refresh_token: refresh_token
-        };
-        googleapis.discover('oauth2', 'v1').execute(function(err, client) {
-            if (!err) {
-                client.oauth2.userinfo.get().withAuthClient(oauth2Client).execute(function(err, results) {
-                    var email = results.email;
-                    if ((email.indexOf('theodo.fr') + 'theodo.fr'.length) != email.length) {
-                        return res.send({
-                            status: -1,
-                            message: "Google Plus authentication failed (domain mismatch)"
-                        });
-                    }
-                    doorClient.open();
-                
-                    res.send({
-                        status: 0,
-                        message: 'Door opened. Welcome !'
+```javascript
+app.post('/api/opendoor', function(req, res) {
+    var refresh_token = req.body.refresh_token;
+    oauth2Client.credentials = {
+        refresh_token: refresh_token
+    };
+    googleapis.discover('oauth2', 'v1').execute(function(err, client) {
+        if (!err) {
+            client.oauth2.userinfo.get().withAuthClient(oauth2Client).execute(function(err, results) {
+                var email = results.email;
+                if ((email.indexOf('theodo.fr') + 'theodo.fr'.length) != email.length) {
+                    return res.send({
+                        status: -1,
+                        message: "Google Plus authentication failed (domain mismatch)"
                     });
+                }
+                doorClient.open();
+            
+                res.send({
+                    status: 0,
+                    message: 'Door opened. Welcome !'
                 });
-            }
-        });
+            });
+        }
     });
+});
+```
 
 And voilà! The whole thing requires a small effort to set it up but offers ourselves a lot of flexibility.
 A [new theodoer](https://www.theodo.fr/blog/2014/04/antoine-gruzelle-is-a-theodoer/) is autonomous the very first day
 of its arrival.
+
 Bonus: HTML5 manifest
 ----------------------
 As a bonus, and in order to render the page as fast as possible, a HTML5 manifest has been added. Basically, the browser will cache the entire page and its assets (JavaScript and stylesheets).
 
-    CACHE MANIFEST
-    # v0.5
-    CACHE:
-    /
-    /stylesheets/bootstrap.min.css
-    /stylesheets/style.css
-    http://code.jquery.com/jquery-2.0.3.min.js
-    https://code.jquery.com/jquery-2.0.3.min.js
-    /javascripts/door.js
-    /javascripts/jquery-2.0.3.min.js
+```yml
+CACHE MANIFEST
+# v0.5
+CACHE:
+/
+/stylesheets/bootstrap.min.css
+/stylesheets/style.css
+http://code.jquery.com/jquery-2.0.3.min.js
+https://code.jquery.com/jquery-2.0.3.min.js
+/javascripts/door.js
+/javascripts/jquery-2.0.3.min.js
+```
 
 Thanks to this, once the token is safely stored in the local storage, the only data transmitted to the server will be the
 only important information: the user token.
