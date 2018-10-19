@@ -1,2 +1,2 @@
 User-agent: *
-Disallow:
+Disallow: /connected-door-with-arduino-and-google-api/
