@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: 'Matthieu Auger Blog',
     author: 'Matthieu Auger',
-    description: 'A blog demonstrating what Gatsby can do.',
+    description: 'News and thoughts about lean, IT and how to build successful products',
     siteUrl: 'https://news.matthieuauger.com',
   },
   plugins: [
@@ -65,5 +65,6 @@ module.exports = {
       },
     },
     `gatsby-plugin-netlify-cms`,
+    `gatsby-plugin-sitemap`
   ],
 }
