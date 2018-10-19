@@ -27,7 +27,7 @@ class Bio extends React.Component {
           }}
         />
         <p>
-          Written by <strong>Matthieu Auger</strong> who lives and works in Paris building useful things.{' '}
+          Written by <strong>Matthieu Auger</strong> who lives and works in Paris building things.{' '}
           <a href="https://twitter.com/matthieuauger">
             You should follow him on Twitter
           </a>
