@@ -21,6 +21,7 @@ class BlogIndex extends React.Component {
         <Helmet
           htmlAttributes={{ lang: 'en' }}
           meta={[{ name: 'description', content: siteDescription }]}
+          meta={[{ name: 'google-site-verification', content: `dS1dBzK4q9PmadKMepSSAKRoQXumwDfisvxwRnAXP_0` }]}
           title={siteTitle}
         />
         <Bio />
