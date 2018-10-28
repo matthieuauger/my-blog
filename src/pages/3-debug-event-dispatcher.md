@@ -8,7 +8,7 @@ Some weeks ago, I was developing a personal project with Symfony2 and found myse
 
 My first thought was "Damn, a debug command would be such useful, guess I will have to wait, maybe I can raise an issue on GitHub to contribute". Then I reminded of a talk given by Kris Wallsmith in Varsaw, for SymfonyCon. His message was simple, yet powerful: « If you want to contribute to open-source, just raise your hand ».
 
-![alt text](./raise-your-hand.png "Hands raised")
+![alt text](/../static/assets/raise-your-hand.png "Hands raised")
 
 You don't need to be technical guru or a forty years old professional to start to contribute, willingness and community are often enough. So I took a leap and proposed a [Pull Request in Symfony](https://github.com/symfony/symfony/pull/10388). 6 months later, the pull request has been merged added in Symfony 2.6.
 
