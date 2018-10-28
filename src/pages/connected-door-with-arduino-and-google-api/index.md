@@ -1,4 +1,5 @@
 ---
+path: /connected-door-with-arduino-and-google-api
 title: Don't bother with keys, open your door with Google API
 date: "2014-06-26T22:12:03.284Z"
 ---

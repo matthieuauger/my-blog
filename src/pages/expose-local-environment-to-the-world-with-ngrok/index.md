@@ -1,4 +1,5 @@
 ---
+path: /expose-local-environment-to-the-world-with-ngrok
 title: Expose your local environment to the world with ngrok
 date: "2016-07-28T22:12:03.284Z"
 ---
