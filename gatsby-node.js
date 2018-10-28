@@ -1,7 +1,6 @@
 const _ = require('lodash')
 const Promise = require('bluebird')
 const path = require('path')
-const { createFilePath } = require('gatsby-source-filesystem')
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions
@@ -15,11 +14,9 @@ exports.createPages = ({ graphql, actions }) => {
             allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }, limit: 1000) {
               edges {
                 node {
-                  fields {
-                    slug
-                  }
                   frontmatter {
                     title
+                    path
                   }
                 }
               }
@@ -40,10 +37,10 @@ exports.createPages = ({ graphql, actions }) => {
           const next = index === 0 ? null : posts[index - 1].node;
 
           createPage({
-            path: post.node.fields.slug,
+            path: post.node.frontmatter.path,
             component: blogPost,
             context: {
-              slug: post.node.fields.slug,
+              slug: post.node.frontmatter.path,
               previous,
               next,
             },
@@ -58,11 +55,10 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `MarkdownRemark`) {
-    const value = createFilePath({ node, getNode })
     createNodeField({
       name: `slug`,
       node,
-      value,
+      value: node.frontmatter.path,
     })
   }
 }
