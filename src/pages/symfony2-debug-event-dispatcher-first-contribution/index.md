@@ -1,5 +1,5 @@
 ---
-path: /symfony2-debug-event-dispatcher-first-contribution
+slug: /symfony2-debug-event-dispatcher-first-contribution
 title: symfony2 debug:event-dispatcher - first contribution to open-source community
 date: "2015-03-06T22:12:03.284Z"
 ---

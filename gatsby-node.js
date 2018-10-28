@@ -16,7 +16,7 @@ exports.createPages = ({ graphql, actions }) => {
                 node {
                   frontmatter {
                     title
-                    path
+                    slug
                   }
                 }
               }
@@ -37,10 +37,11 @@ exports.createPages = ({ graphql, actions }) => {
           const next = index === 0 ? null : posts[index - 1].node;
 
           createPage({
-            path: post.node.frontmatter.path,
+            path: post.node.frontmatter.slug,
             component: blogPost,
             context: {
-              slug: post.node.frontmatter.path,
+              // these will be injected to graphQl query
+              slug: post.node.frontmatter.slug,
               previous,
               next,
             },
@@ -58,7 +59,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     createNodeField({
       name: `slug`,
       node,
-      value: node.frontmatter.path,
+      value: node.frontmatter.slug,
     })
   }
 }
