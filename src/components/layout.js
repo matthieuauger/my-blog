@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link } from 'gatsby'
+import Helmet from 'react-helmet'
+import get from 'lodash/get'
 
 import { rhythm, scale } from '../utils/typography'
 
@@ -8,6 +10,12 @@ class Template extends React.Component {
     const { location, children } = this.props
     const rootPath = `${__PATH_PREFIX__}/`
     let header
+
+    const siteTitle = get(this, 'props.data.site.siteMetadata.title')
+    const siteDescription = get(
+      this,
+      'props.data.site.siteMetadata.description'
+    )
 
     if (location.pathname === rootPath) {
       header = (
@@ -53,17 +61,25 @@ class Template extends React.Component {
       )
     }
     return (
-      <div
-        style={{
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          maxWidth: rhythm(24),
-          padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
-        }}
-      >
-        {header}
-        {children}
-      </div>
+      <>
+        <Helmet
+          htmlAttributes={{ lang: 'en' }}
+          meta={[{ name: 'description', content: siteDescription }]}
+          meta={[{ name: 'google-site-verification', content: `dS1dBzK4q9PmadKMepSSAKRoQXumwDfisvxwRnAXP_0` }]}
+          title={siteTitle}
+        />
+        <div
+          style={{
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            maxWidth: rhythm(24),
+            padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
+          }}
+        >
+          {header}
+          {children}
+        </div>
+      </>
     )
   }
 }
