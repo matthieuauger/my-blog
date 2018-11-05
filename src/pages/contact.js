@@ -16,12 +16,6 @@ class BlogContact extends React.Component {
 
     return (
       <Layout location={this.props.location}>
-        <Helmet
-          htmlAttributes={{ lang: 'en' }}
-          meta={[{ name: 'description', content: siteDescription }]}
-          meta={[{ name: 'google-site-verification', content: `dS1dBzK4q9PmadKMepSSAKRoQXumwDfisvxwRnAXP_0` }]}
-          title={siteTitle}
-        />
         <h1>Contact</h1>
         <Formik
           initialValues={{ name: '', email: '', message: '' }}
